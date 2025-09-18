@@ -16,6 +16,8 @@ intents.message_content = True
 intents.members = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
+scores = {}
+
 
 secret_role = "Gamer"
 
@@ -160,7 +162,7 @@ async def mute(ctx, member:discord.Member, seconds: int,*, reason="No reason giv
     if not mute_role:
         mute_role = await ctx.guild.create_role(name="Muted")
         for channel in ctx.guild.channels:
-            await channel.set_permissions(muted_role, speak=False, send_messages=False)
+            await channel.set_permissions(mute_role, speak=False, send_messages=False)
 
     await member.add_roles(mute_role,reason=reason)
     await ctx.send(f"🔇 {member.mention} has been muted for {seconds} seconds. Reason: {reason}")
@@ -173,10 +175,6 @@ def ensure_score(user_id):
     if user_id not in scores:
         scores[user_id] = {"wins": 0, "losses": 0, "ties": 0}
 
-@bot.command()
-async def coinflip(ctx):
-    result = random.choice(["Heads", "Tails"])
-    await ctx.send(f"🪙 The coin landed on **{result}**!")
 
 @bot.command()
 async def coinflip(ctx):
@@ -216,7 +214,7 @@ async def rps(ctx, choice:str):
     await ctx.send(f"You chose **{choice}**. I chose **{bot_choice}**. {emoji[result]}")
 
 @bot.command()
-async def guess(cts,low:int=1, high: int=10):
+async def guess(ctx,low:int=1, high: int=10):
     if low > high:
         await ctx.send(f"⚠️ Invalid range. Make sure low < high. Example: `!guess 1 20`")
         return
@@ -247,12 +245,10 @@ async def guess(cts,low:int=1, high: int=10):
     await ctx.send(f"❌ Out of attempts! The number was **{number}**.")
 
 @bot.command()
-async def score(ctx, member:discord.Member = none):
+async def score(ctx, member:discord.Member = None ):
     member = member or ctx.author
     uid = member.id
-    if uid not in scores:
-        await ctx.send(f"ℹ️ {member.display_name} has no game records yet.")
-        return
+    ensure_score(uid)
     s=scores[uid]
     await ctx.send(f"📊 {member.display_name} — Wins: {s['wins']}, Losses: {s['losses']}, Ties: {s['ties']}")
 
