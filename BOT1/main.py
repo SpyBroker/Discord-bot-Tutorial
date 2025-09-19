@@ -1,3 +1,4 @@
+# this bot has numerous functions and i simply add new and basic stuffs here
 import discord
 from discord.ext import commands
 import logging
