@@ -259,4 +259,25 @@ async def reset_scores(ctx):
     scores.clear()
     await ctx.send("✅ All scores have been reset.")
 
+@bot.command()
+async def add(ctx, a: int, b: int):
+    await ctx.send(a + b)
+
+def to_upper(argument):
+    return argument.upper()
+
+@bot.command()
+async def up(ctx, *, content: to_upper):
+    await ctx.send(content)
+
+class Slapper(commands.Converter):
+    async def convert(self, ctx, argument):
+        to_slap = random.choice(ctx.guild.members)
+        return f'{ctx.author} slapped {to_slap} because *{argument}*'
+
+@bot.command()
+async def slap(ctx, *, reason: Slapper):
+    await ctx.send(reason)
+
+
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
