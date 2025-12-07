@@ -121,14 +121,6 @@ async def guess(ctx,user_guess: int):
             await ctx.send("You guessed too high!")
         else:
             attempts = game["attempts"]
-            await ctx.send(f"You guessed correctly! {attempts}")
-
-            # try:
-            #     response = requests.get(f"https://numbersapi.com/{secret_number}/trivia", timeout=5)
-            #     trivia = response.text
-            # except Exception as e:
-            #     print(f"Error fetching trivia: {e}")
-            #     trivia = "Fun fact unavailable!"
 
             joke_text = await joke()
 
